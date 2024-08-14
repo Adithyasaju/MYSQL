@@ -1,0 +1,205 @@
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| 8am                |
+| information_schema |
+| mysql              |
+| performance_schema |
+| sys                |
+| world              |
++--------------------+
+6 rows in set (0.16 sec)
+
+mysql> use 8am;
+Database changed
+mysql> show tables;
++---------------+
+| Tables_in_8am |
++---------------+
+| bunit         |
+| dept          |
+| employee      |
++---------------+
+3 rows in set (0.10 sec)
+
+mysql> DROP database 8am;
+Query OK, 3 rows affected (0.37 sec)
+
+mysql> SHOW databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| mysql              |
+| performance_schema |
+| sys                |
+| world              |
++--------------------+
+5 rows in set (0.01 sec)
+
+mysql> CREATE DATABASE 8am;
+Query OK, 1 row affected (0.04 sec)
+
+mysql> SHOW databases;
++--------------------+
+| Database           |
++--------------------+
+| 8am                |
+| information_schema |
+| mysql              |
+| performance_schema |
+| sys                |
+| world              |
++--------------------+
+6 rows in set (0.00 sec)
+
+mysql> USE 8am;
+Database changed
+mysql> CREATE TABLE employee(
+    ->     eid int,
+    ->     ename varchar(32),
+    -> esal float
+    ->     );
+Query OK, 0 rows affected (0.14 sec)
+
+mysql> INSERT INTO employee
+    -> VALUES(101,'Rahul',45000),
+    -> (102,'Sonia',55000),
+    -> (103,'Amith',60000);
+Query OK, 3 rows affected (0.03 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+
+mysql> SELECT * FROM employee;
++------+-------+-------+
+| eid  | ename | esal  |
++------+-------+-------+
+|  101 | Rahul | 45000 |
+|  102 | Sonia | 55000 |
+|  103 | Amith | 60000 |
++------+-------+-------+
+3 rows in set (0.01 sec)
+
+mysql> ALTER TABLE employee
+    -> ADD age int;
+Query OK, 0 rows affected (0.15 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> SELECT * FROM employee;
++------+-------+-------+------+
+| eid  | ename | esal  | age  |
++------+-------+-------+------+
+|  101 | Rahul | 45000 | NULL |
+|  102 | Sonia | 55000 | NULL |
+|  103 | Amith | 60000 | NULL |
++------+-------+-------+------+
+3 rows in set (0.01 sec)
+
+mysql> ALTER TABLE employee
+    -> modify age float;
+Query OK, 3 rows affected (0.21 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+
+mysql> desc employee;
++-------+-------------+------+-----+---------+-------+
+| Field | Type        | Null | Key | Default | Extra |
++-------+-------------+------+-----+---------+-------+
+| eid   | int         | YES  |     | NULL    |       |
+| ename | varchar(32) | YES  |     | NULL    |       |
+| esal  | float       | YES  |     | NULL    |       |
+| age   | float       | YES  |     | NULL    |       |
++-------+-------------+------+-----+---------+-------+
+4 rows in set (0.03 sec)
+
+mysql> ALTER TABLE employee
+    -> MODIFY esal int;
+Query OK, 3 rows affected (0.17 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+
+mysql> desc employee;
++-------+-------------+------+-----+---------+-------+
+| Field | Type        | Null | Key | Default | Extra |
++-------+-------------+------+-----+---------+-------+
+| eid   | int         | YES  |     | NULL    |       |
+| ename | varchar(32) | YES  |     | NULL    |       |
+| esal  | int         | YES  |     | NULL    |       |
+| age   | float       | YES  |     | NULL    |       |
++-------+-------------+------+-----+---------+-------+
+4 rows in set (0.01 sec)
+
+mysql> ALTER TABLE employee
+    -> modify ename int;
+ERROR 1366 (HY000): Incorrect integer value: 'Rahul' for column 'ename' at row 1
+mysql> ALTER TABLE employee
+    -> modify age varchar(32);
+Query OK, 3 rows affected (0.16 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+
+mysql> ALTER TABLE employee
+    -> drop age;
+Query OK, 0 rows affected (0.05 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> ALTER TABLE employee
+    -> modify eid int primary key;
+Query OK, 0 rows affected (0.21 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> desc employee;
++-------+-------------+------+-----+---------+-------+
+| Field | Type        | Null | Key | Default | Extra |
++-------+-------------+------+-----+---------+-------+
+| eid   | int         | NO   | PRI | NULL    |       |
+| ename | varchar(32) | YES  |     | NULL    |       |
+| esal  | int         | YES  |     | NULL    |       |
++-------+-------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+mysql> ALTER TABLE employee
+    -> modify esal int not null;
+Query OK, 0 rows affected (0.18 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> desc employee;
++-------+-------------+------+-----+---------+-------+
+| Field | Type        | Null | Key | Default | Extra |
++-------+-------------+------+-----+---------+-------+
+| eid   | int         | NO   | PRI | NULL    |       |
+| ename | varchar(32) | YES  |     | NULL    |       |
+| esal  | int         | NO   |     | NULL    |       |
++-------+-------------+------+-----+---------+-------+
+3 rows in set (0.01 sec)
+
+mysql> ALTER TABLE employee
+    -> modify esal int unique;
+Query OK, 0 rows affected (0.23 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> desc employee;
++-------+-------------+------+-----+---------+-------+
+| Field | Type        | Null | Key | Default | Extra |
++-------+-------------+------+-----+---------+-------+
+| eid   | int         | NO   | PRI | NULL    |       |
+| ename | varchar(32) | YES  |     | NULL    |       |
+| esal  | int         | YES  | UNI | NULL    |       |
++-------+-------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+mysql> ALTER TABLE employee
+    -> DROP PRIMARY KEY;
+Query OK, 3 rows affected (0.18 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+
+mysql> ALTER TABLE employee
+    -> DROP CONSTRAINT esal;
+Query OK, 0 rows affected (0.05 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> desc employee;
++-------+-------------+------+-----+---------+-------+
+| Field | Type        | Null | Key | Default | Extra |
++-------+-------------+------+-----+---------+-------+
+| eid   | int         | NO   |     | NULL    |       |
+| ename | varchar(32) | YES  |     | NULL    |       |
+| esal  | int         | YES  |     | NULL    |       |
++-------+-------------+------+-----+---------+-------+
