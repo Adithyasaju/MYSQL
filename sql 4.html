@@ -1,0 +1,151 @@
+SHOW tables;
++---------------+
+| Tables_in_8am |
++---------------+
+| dept          |
++---------------+
+1 row in set (0.01 sec)
+
+mysql> SELECT * FROM dept;
++---------+-------+-----------+---------------+
+| dept_Id | Name  | Location  | dept_Email_Id |
++---------+-------+-----------+---------------+
+|       1 | HR    | Bangalore | hr@ibm.com    |
+|       2 | IT    | Chennai   | it@ibm.com    |
+|       3 | Sales | Mumbai    | sales@ibm.com |
++---------+-------+-----------+---------------+
+3 rows in set (0.00 sec)
+
+mysql> CREATE TABLE employee(eId int,eName VARCHAR(32),eSal float,dept_Id int,age INT CHECK (age>18),PRIMARY KEY (eId),FOREIGN KEY (dept_Id) REFERENCES Dept(dept_Id));
+Query OK, 0 rows affected (0.19 sec)
+
+mysql> desc employee;
++---------+-------------+------+-----+---------+-------+
+| Field   | Type        | Null | Key | Default | Extra |
++---------+-------------+------+-----+---------+-------+
+| eId     | int         | NO   | PRI | NULL    |       |
+| eName   | varchar(32) | YES  |     | NULL    |       |
+| eSal    | float       | YES  |     | NULL    |       |
+| dept_Id | int         | YES  | MUL | NULL    |       |
+| age     | int         | YES  |     | NULL    |       |
++---------+-------------+------+-----+---------+-------+
+5 rows in set (0.00 sec)
+
+mysql> INSERT INTO employee
+    -> VALUES
+    -> (101,"Rahul",45000.45,1,52),
+    -> (102,"Sonia",45000.45,1,72),
+    -> (103,"Priyanka",45000.45,1,42),
+    -> (104,"Modi",55000.45,2,62),
+    -> (105,"Amith",55000.45,2,62),
+    -> (106,"Rajni",55000.45,3,62),
+    -> (107,"VS",65000.45,3,42),
+    -> (108,"Vijay",65000.45,3,42),
+    -> (109,"Sharuk",65000.45,3,52),
+    -> (110,"Salman",15000.45,3,55),
+    -> (111,"Alia",15000.45,3,32),
+    -> (112,"Keerti",15000.45,3,27);
+Query OK, 12 rows affected (0.03 sec)
+Records: 12  Duplicates: 0  Warnings: 0
+
+mysql> SELECT * FROM employee;
++-----+----------+---------+---------+------+
+| eId | eName    | eSal    | dept_Id | age  |
++-----+----------+---------+---------+------+
+| 101 | Rahul    | 45000.4 |       1 |   52 |
+| 102 | Sonia    | 45000.4 |       1 |   72 |
+| 103 | Priyanka | 45000.4 |       1 |   42 |
+| 104 | Modi     | 55000.4 |       2 |   62 |
+| 105 | Amith    | 55000.4 |       2 |   62 |
+| 106 | Rajni    | 55000.4 |       3 |   62 |
+| 107 | VS       | 65000.4 |       3 |   42 |
+| 108 | Vijay    | 65000.4 |       3 |   42 |
+| 109 | Sharuk   | 65000.4 |       3 |   52 |
+| 110 | Salman   | 15000.5 |       3 |   55 |
+| 111 | Alia     | 15000.5 |       3 |   32 |
+| 112 | Keerti   | 15000.5 |       3 |   27 |
++-----+----------+---------+---------+------+
+12 rows in set (0.00 sec)
+
+mysql> SELECT * FROM
+    -> employee,dept
+    -> WHERE employee.dept_Id = dept.dept_Id;
++-----+----------+---------+---------+------+---------+-------+-----------+---------------+
+| eId | eName    | eSal    | dept_Id | age  | dept_Id | Name  | Location  | dept_Email_Id |
++-----+----------+---------+---------+------+---------+-------+-----------+---------------+
+| 101 | Rahul    | 45000.4 |       1 |   52 |       1 | HR    | Bangalore | hr@ibm.com    |
+| 102 | Sonia    | 45000.4 |       1 |   72 |       1 | HR    | Bangalore | hr@ibm.com    |
+| 103 | Priyanka | 45000.4 |       1 |   42 |       1 | HR    | Bangalore | hr@ibm.com    |
+| 104 | Modi     | 55000.4 |       2 |   62 |       2 | IT    | Chennai   | it@ibm.com    |
+| 105 | Amith    | 55000.4 |       2 |   62 |       2 | IT    | Chennai   | it@ibm.com    |
+| 106 | Rajni    | 55000.4 |       3 |   62 |       3 | Sales | Mumbai    | sales@ibm.com |
+| 107 | VS       | 65000.4 |       3 |   42 |       3 | Sales | Mumbai    | sales@ibm.com |
+| 108 | Vijay    | 65000.4 |       3 |   42 |       3 | Sales | Mumbai    | sales@ibm.com |
+| 109 | Sharuk   | 65000.4 |       3 |   52 |       3 | Sales | Mumbai    | sales@ibm.com |
+| 110 | Salman   | 15000.5 |       3 |   55 |       3 | Sales | Mumbai    | sales@ibm.com |
+| 111 | Alia     | 15000.5 |       3 |   32 |       3 | Sales | Mumbai    | sales@ibm.com |
+| 112 | Keerti   | 15000.5 |       3 |   27 |       3 | Sales | Mumbai    | sales@ibm.com |
++-----+----------+---------+---------+------+---------+-------+-----------+---------------+
+12 rows in set (0.01 sec)
+
+mysql> SELECT ename,Name
+    -> from employee,dept
+    -> WHERE employee.dept_Id=dept.dept_Id;
++----------+-------+
+| ename    | Name  |
++----------+-------+
+| Rahul    | HR    |
+| Sonia    | HR    |
+| Priyanka | HR    |
+| Modi     | IT    |
+| Amith    | IT    |
+| Rajni    | Sales |
+| VS       | Sales |
+| Vijay    | Sales |
+| Sharuk   | Sales |
+| Salman   | Sales |
+| Alia     | Sales |
+| Keerti   | Sales |
++----------+-------+
+12 rows in set (0.00 sec)
+
+mysql> SELECT *
+    -> from employee e,dept d
+    -> WHERE e.dept_Id=d.dept_Id;
++-----+----------+---------+---------+------+---------+-------+-----------+---------------+
+| eId | eName    | eSal    | dept_Id | age  | dept_Id | Name  | Location  | dept_Email_Id |
++-----+----------+---------+---------+------+---------+-------+-----------+---------------+
+| 101 | Rahul    | 45000.4 |       1 |   52 |       1 | HR    | Bangalore | hr@ibm.com    |
+| 102 | Sonia    | 45000.4 |       1 |   72 |       1 | HR    | Bangalore | hr@ibm.com    |
+| 103 | Priyanka | 45000.4 |       1 |   42 |       1 | HR    | Bangalore | hr@ibm.com    |
+| 104 | Modi     | 55000.4 |       2 |   62 |       2 | IT    | Chennai   | it@ibm.com    |
+| 105 | Amith    | 55000.4 |       2 |   62 |       2 | IT    | Chennai   | it@ibm.com    |
+| 106 | Rajni    | 55000.4 |       3 |   62 |       3 | Sales | Mumbai    | sales@ibm.com |
+| 107 | VS       | 65000.4 |       3 |   42 |       3 | Sales | Mumbai    | sales@ibm.com |
+| 108 | Vijay    | 65000.4 |       3 |   42 |       3 | Sales | Mumbai    | sales@ibm.com |
+| 109 | Sharuk   | 65000.4 |       3 |   52 |       3 | Sales | Mumbai    | sales@ibm.com |
+| 110 | Salman   | 15000.5 |       3 |   55 |       3 | Sales | Mumbai    | sales@ibm.com |
+| 111 | Alia     | 15000.5 |       3 |   32 |       3 | Sales | Mumbai    | sales@ibm.com |
+| 112 | Keerti   | 15000.5 |       3 |   27 |       3 | Sales | Mumbai    | sales@ibm.com |
++-----+----------+---------+---------+------+---------+-------+-----------+---------------+
+12 rows in set (0.00 sec)
+
+mysql> SELECT e.ename,d.name,d.location
+    -> from employee e,dept d
+    -> WHERE e.dept_Id=d.dept_Id;
++----------+-------+-----------+
+| ename    | name  | location  |
++----------+-------+-----------+
+| Rahul    | HR    | Bangalore |
+| Sonia    | HR    | Bangalore |
+| Priyanka | HR    | Bangalore |
+| Modi     | IT    | Chennai   |
+| Amith    | IT    | Chennai   |
+| Rajni    | Sales | Mumbai    |
+| VS       | Sales | Mumbai    |
+| Vijay    | Sales | Mumbai    |
+| Sharuk   | Sales | Mumbai    |
+| Salman   | Sales | Mumbai    |
+| Alia     | Sales | Mumbai    |
+| Keerti   | Sales | Mumbai    |
++----------+-------+-----------+
