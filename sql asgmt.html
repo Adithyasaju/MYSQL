@@ -1,0 +1,449 @@
+mysql> SHOW DATABASES;
++--------------------+
+| Database           |
++--------------------+
+| 8am                |
+| information_schema |
+| mysql              |
+| performance_schema |
+| sys                |
+| world              |
++--------------------+
+6 rows in set (0.03 sec)
+
+mysql> USE 8am;
+Database changed
+mysql> SHOW tables;
++---------------+
+| Tables_in_8am |
++---------------+
+| dept          |
+| employee      |
++---------------+
+2 rows in set (0.00 sec)
+
+mysql> SELECT * FROM employee;
++-----+----------+------------+-------+-----+-----------+
+| eid | fname    | lname      | esal  | age | loc       |
++-----+----------+------------+-------+-----+-----------+
+| 101 | Rahul    | Gandhi     | 46000 |  52 | Wayanad   |
+| 102 | Sonia    | Gandhi     | 56000 |  78 | Wayanad   |
+| 103 | Priyanka | vadra      | 66000 |  40 | NewDelhi  |
+| 104 | Modi     | PM         | 76000 |  75 | NewDelhi  |
+| 105 | Amith    | Shaw       | 86000 |  80 | NewDelhi  |
+| 106 | Rajni    | Kanth      | 26000 |  75 | Chennai   |
+| 107 | Vijay    | Sethupathi | 36000 |  40 | Chennai   |
+| 108 | Anuska   | Setti      | 26000 |  38 | Bangalore |
+| 109 | Alia     | NULL       | 95000 |  35 | Bangalore |
+| 110 | Keerthi  | NULL       |  NULL |  25 | NULL      |
++-----+----------+------------+-------+-----+-----------+
+10 rows in set (0.00 sec)
+
+mysql> SELECT * FROM employee
+    -> WHERE lname IN (
+    -> SELECT lname FROM employee
+    -> GROUP BY lname
+    -> HAVING COUNT(*) > 1
+    -> );
++-----+-------+--------+-------+-----+---------+
+| eid | fname | lname  | esal  | age | loc     |
++-----+-------+--------+-------+-----+---------+
+| 101 | Rahul | Gandhi | 46000 |  52 | Wayanad |
+| 102 | Sonia | Gandhi | 56000 |  78 | Wayanad |
++-----+-------+--------+-------+-----+---------+
+2 rows in set (0.00 sec)
+
+mysql> SELECT * FROM employee
+    -> WHERE age > 70;
++-----+-------+--------+-------+-----+----------+
+| eid | fname | lname  | esal  | age | loc      |
++-----+-------+--------+-------+-----+----------+
+| 102 | Sonia | Gandhi | 56000 |  78 | Wayanad  |
+| 104 | Modi  | PM     | 76000 |  75 | NewDelhi |
+| 105 | Amith | Shaw   | 86000 |  80 | NewDelhi |
+| 106 | Rajni | Kanth  | 26000 |  75 | Chennai  |
++-----+-------+--------+-------+-----+----------+
+4 rows in set (0.00 sec)
+
+mysql> SELECT fname ,lname ,loc FROM employee
+    -> WHERE loc IN (
+    -> SELECT loc FROM employee
+    -> GROUP BY loc
+    -> HAVING COUNT(*) > 1
+    -> );
++----------+------------+-----------+
+| fname    | lname      | loc       |
++----------+------------+-----------+
+| Rahul    | Gandhi     | Wayanad   |
+| Sonia    | Gandhi     | Wayanad   |
+| Priyanka | vadra      | NewDelhi  |
+| Modi     | PM         | NewDelhi  |
+| Amith    | Shaw       | NewDelhi  |
+| Rajni    | Kanth      | Chennai   |
+| Vijay    | Sethupathi | Chennai   |
+| Anuska   | Setti      | Bangalore |
+| Alia     | NULL       | Bangalore |
++----------+------------+-----------+
+9 rows in set (0.01 sec)
+
+mysql> SELECT * FROM employee
+    -> WHERE lname LIKE '%h';
++-----+-------+-------+-------+-----+---------+
+| eid | fname | lname | esal  | age | loc     |
++-----+-------+-------+-------+-----+---------+
+| 106 | Rajni | Kanth | 26000 |  75 | Chennai |
++-----+-------+-------+-------+-----+---------+
+1 row in set (0.01 sec)
+
+mysql> SELECT COUNT(*) FROM employee
+    -> WHERE lname LIKE '%i';
++----------+
+| COUNT(*) |
++----------+
+|        4 |
++----------+
+1 row in set (0.01 sec)
+
+mysql> SELECT * FROM employee
+    -> WHERE esal=(SELECT max(esal) FROM employee);
++-----+-------+-------+-------+-----+-----------+
+| eid | fname | lname | esal  | age | loc       |
++-----+-------+-------+-------+-----+-----------+
+| 109 | Alia  | NULL  | 95000 |  35 | Bangalore |
++-----+-------+-------+-------+-----+-----------+
+1 row in set (0.00 sec)
+
+mysql> SELECT * FROM employee
+    -> WHERE esal=(SELECT min(esal) FROM employee);
++-----+--------+-------+-------+-----+-----------+
+| eid | fname  | lname | esal  | age | loc       |
++-----+--------+-------+-------+-----+-----------+
+| 106 | Rajni  | Kanth | 26000 |  75 | Chennai   |
+| 108 | Anuska | Setti | 26000 |  38 | Bangalore |
++-----+--------+-------+-------+-----+-----------+
+2 rows in set (0.00 sec)
+
+mysql> UPDATE employee
+    -> SET lname='Sheti'
+    -> WHERE eid=102;
+Query OK, 1 row affected (0.01 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> SELECT * FROM employee;
++-----+----------+------------+-------+-----+-----------+
+| eid | fname    | lname      | esal  | age | loc       |
++-----+----------+------------+-------+-----+-----------+
+| 101 | Rahul    | Gandhi     | 46000 |  52 | Wayanad   |
+| 102 | Sonia    | Sheti      | 56000 |  78 | Wayanad   |
+| 103 | Priyanka | vadra      | 66000 |  40 | NewDelhi  |
+| 104 | Modi     | PM         | 76000 |  75 | NewDelhi  |
+| 105 | Amith    | Shaw       | 86000 |  80 | NewDelhi  |
+| 106 | Rajni    | Kanth      | 26000 |  75 | Chennai   |
+| 107 | Vijay    | Sethupathi | 36000 |  40 | Chennai   |
+| 108 | Anuska   | Setti      | 26000 |  38 | Bangalore |
+| 109 | Alia     | NULL       | 95000 |  35 | Bangalore |
+| 110 | Keerthi  | NULL       |  NULL |  25 | NULL      |
++-----+----------+------------+-------+-----+-----------+
+10 rows in set (0.00 sec)
+
+mysql> SELECT * FROM employee
+    -> WHERE fname LIKE 'A%' and loc LIKE 'B%';
++-----+--------+-------+-------+-----+-----------+
+| eid | fname  | lname | esal  | age | loc       |
++-----+--------+-------+-------+-----+-----------+
+| 108 | Anuska | Setti | 26000 |  38 | Bangalore |
+| 109 | Alia   | NULL  | 95000 |  35 | Bangalore |
++-----+--------+-------+-------+-----+-----------+
+2 rows in set (0.00 sec)
+
+mysql> SELECT * FROM employee
+    -> WHERE loc="NewDelhi"
+    -> order by esal desc
+    -> limit 1;
++-----+-------+-------+-------+-----+----------+
+| eid | fname | lname | esal  | age | loc      |
++-----+-------+-------+-------+-----+----------+
+| 105 | Amith | Shaw  | 86000 |  80 | NewDelhi |
++-----+-------+-------+-------+-----+----------+
+1 row in set (0.00 sec)
+
+mysql> SELECT * FROM employee
+    -> WHERE loc="NewDelhi" and
+    -> age > 70;
++-----+-------+-------+-------+-----+----------+
+| eid | fname | lname | esal  | age | loc      |
++-----+-------+-------+-------+-----+----------+
+| 104 | Modi  | PM    | 76000 |  75 | NewDelhi |
+| 105 | Amith | Shaw  | 86000 |  80 | NewDelhi |
++-----+-------+-------+-------+-----+----------+
+2 rows in set (0.00 sec)
+
+mysql> SELECT * FROM employee
+    -> WHERE esal<50000;
++-----+--------+------------+-------+-----+-----------+
+| eid | fname  | lname      | esal  | age | loc       |
++-----+--------+------------+-------+-----+-----------+
+| 101 | Rahul  | Gandhi     | 46000 |  52 | Wayanad   |
+| 106 | Rajni  | Kanth      | 26000 |  75 | Chennai   |
+| 107 | Vijay  | Sethupathi | 36000 |  40 | Chennai   |
+| 108 | Anuska | Setti      | 26000 |  38 | Bangalore |
++-----+--------+------------+-------+-----+-----------+
+4 rows in set (0.00 sec)
+
+mysql> SELECT fname,lname ,esal FROM employee
+    -> WHERE esal between 20000 and 40000;
++--------+------------+-------+
+| fname  | lname      | esal  |
++--------+------------+-------+
+| Rajni  | Kanth      | 26000 |
+| Vijay  | Sethupathi | 36000 |
+| Anuska | Setti      | 26000 |
++--------+------------+-------+
+3 rows in set (0.00 sec)
+
+mysql> SELECT * FROM employee
+    -> WHERE fname LIKE '__j%';
++-----+-------+------------+-------+-----+---------+
+| eid | fname | lname      | esal  | age | loc     |
++-----+-------+------------+-------+-----+---------+
+| 106 | Rajni | Kanth      | 26000 |  75 | Chennai |
+| 107 | Vijay | Sethupathi | 36000 |  40 | Chennai |
++-----+-------+------------+-------+-----+---------+
+2 rows in set (0.00 sec)
+
+mysql> SELECT * FROM employee
+    -> WHERE fname LIKE '__j%' and
+    -> loc="NewDelhi";
+Empty set (0.00 sec)
+
+mysql> SELECT COUNT(*) from employee
+    -> WHERE fname LIKE '__j%';
++----------+
+| COUNT(*) |
++----------+
+|        2 |
++----------+
+1 row in set (0.00 sec)
+
+mysql> SELECT * FROM employee
+    -> WHERE esal=(SELECT min(esal) FROM employee);
++-----+--------+-------+-------+-----+-----------+
+| eid | fname  | lname | esal  | age | loc       |
++-----+--------+-------+-------+-----+-----------+
+| 106 | Rajni  | Kanth | 26000 |  75 | Chennai   |
+| 108 | Anuska | Setti | 26000 |  38 | Bangalore |
++-----+--------+-------+-------+-----+-----------+
+2 rows in set (0.00 sec)
+
+mysql> UPDATE employee
+    -> SET esal=esal+1000;
+Query OK, 9 rows affected (0.02 sec)
+Rows matched: 10  Changed: 9  Warnings: 0
+
+mysql> SELECT * FROM employee
+    -> WHERE esal=(SELECT min(esal) FROM employee);
++-----+--------+-------+-------+-----+-----------+
+| eid | fname  | lname | esal  | age | loc       |
++-----+--------+-------+-------+-----+-----------+
+| 106 | Rajni  | Kanth | 27000 |  75 | Chennai   |
+| 108 | Anuska | Setti | 27000 |  38 | Bangalore |
++-----+--------+-------+-------+-----+-----------+
+2 rows in set (0.00 sec)
+
+mysql> SELECT * FROM employee
+    -> ORDER BY fname ;
++-----+----------+------------+-------+-----+-----------+
+| eid | fname    | lname      | esal  | age | loc       |
++-----+----------+------------+-------+-----+-----------+
+| 109 | Alia     | NULL       | 96000 |  35 | Bangalore |
+| 105 | Amith    | Shaw       | 87000 |  80 | NewDelhi  |
+| 108 | Anuska   | Setti      | 27000 |  38 | Bangalore |
+| 110 | Keerthi  | NULL       |  NULL |  25 | NULL      |
+| 104 | Modi     | PM         | 77000 |  75 | NewDelhi  |
+| 103 | Priyanka | vadra      | 67000 |  40 | NewDelhi  |
+| 101 | Rahul    | Gandhi     | 47000 |  52 | Wayanad   |
+| 106 | Rajni    | Kanth      | 27000 |  75 | Chennai   |
+| 102 | Sonia    | Sheti      | 57000 |  78 | Wayanad   |
+| 107 | Vijay    | Sethupathi | 37000 |  40 | Chennai   |
++-----+----------+------------+-------+-----+-----------+
+10 rows in set (0.01 sec)
+
+mysql> SELECT * FROM employee
+    -> ORDER BY fname DESC;
++-----+----------+------------+-------+-----+-----------+
+| eid | fname    | lname      | esal  | age | loc       |
++-----+----------+------------+-------+-----+-----------+
+| 107 | Vijay    | Sethupathi | 37000 |  40 | Chennai   |
+| 102 | Sonia    | Sheti      | 57000 |  78 | Wayanad   |
+| 106 | Rajni    | Kanth      | 27000 |  75 | Chennai   |
+| 101 | Rahul    | Gandhi     | 47000 |  52 | Wayanad   |
+| 103 | Priyanka | vadra      | 67000 |  40 | NewDelhi  |
+| 104 | Modi     | PM         | 77000 |  75 | NewDelhi  |
+| 110 | Keerthi  | NULL       |  NULL |  25 | NULL      |
+| 108 | Anuska   | Setti      | 27000 |  38 | Bangalore |
+| 105 | Amith    | Shaw       | 87000 |  80 | NewDelhi  |
+| 109 | Alia     | NULL       | 96000 |  35 | Bangalore |
++-----+----------+------------+-------+-----+-----------+
+10 rows in set (0.00 sec)
+
+mysql> SELECT * FROM employee
+    -> WHERE lname LIKE '%t__' and
+    -> esal > 30000;
++-----+-------+------------+-------+-----+---------+
+| eid | fname | lname      | esal  | age | loc     |
++-----+-------+------------+-------+-----+---------+
+| 107 | Vijay | Sethupathi | 37000 |  40 | Chennai |
++-----+-------+------------+-------+-----+---------+
+1 row in set (0.00 sec)
+
+mysql> SELECT * FROM employee
+    -> WHERE loc IN ('Bangalore','Wayanad');
++-----+--------+--------+-------+-----+-----------+
+| eid | fname  | lname  | esal  | age | loc       |
++-----+--------+--------+-------+-----+-----------+
+| 101 | Rahul  | Gandhi | 47000 |  52 | Wayanad   |
+| 102 | Sonia  | Sheti  | 57000 |  78 | Wayanad   |
+| 108 | Anuska | Setti  | 27000 |  38 | Bangalore |
+| 109 | Alia   | NULL   | 96000 |  35 | Bangalore |
++-----+--------+--------+-------+-----+-----------+
+4 rows in set (0.00 sec)
+
+mysql> SELECT * FROM employee
+    -> WHERE fname LIKE '_____';
++-----+-------+------------+-------+-----+----------+
+| eid | fname | lname      | esal  | age | loc      |
++-----+-------+------------+-------+-----+----------+
+| 101 | Rahul | Gandhi     | 47000 |  52 | Wayanad  |
+| 102 | Sonia | Sheti      | 57000 |  78 | Wayanad  |
+| 105 | Amith | Shaw       | 87000 |  80 | NewDelhi |
+| 106 | Rajni | Kanth      | 27000 |  75 | Chennai  |
+| 107 | Vijay | Sethupathi | 37000 |  40 | Chennai  |
++-----+-------+------------+-------+-----+----------+
+5 rows in set (0.00 sec)
+
+mysql> SELECT * FROM employee
+    -> WHERE length(fname)=5;
++-----+-------+------------+-------+-----+----------+
+| eid | fname | lname      | esal  | age | loc      |
++-----+-------+------------+-------+-----+----------+
+| 101 | Rahul | Gandhi     | 47000 |  52 | Wayanad  |
+| 102 | Sonia | Sheti      | 57000 |  78 | Wayanad  |
+| 105 | Amith | Shaw       | 87000 |  80 | NewDelhi |
+| 106 | Rajni | Kanth      | 27000 |  75 | Chennai  |
+| 107 | Vijay | Sethupathi | 37000 |  40 | Chennai  |
++-----+-------+------------+-------+-----+----------+
+5 rows in set (0.00 sec)
+
+mysql> SELECT age as AGE,
+    -> COUNT(eid) as No_of_Employees
+    -> FROM employee
+    -> GROUP BY age;
++-----+-----------------+
+| AGE | No_of_Employees |
++-----+-----------------+
+|  52 |               1 |
+|  78 |               1 |
+|  40 |               2 |
+|  75 |               2 |
+|  80 |               1 |
+|  38 |               1 |
+|  35 |               1 |
+|  25 |               1 |
++-----+-----------------+
+8 rows in set (0.01 sec)
+
+mysql> SELECT * FROM employee
+    -> WHERE esal IS NULL;
++-----+---------+-------+------+-----+------+
+| eid | fname   | lname | esal | age | loc  |
++-----+---------+-------+------+-----+------+
+| 110 | Keerthi | NULL  | NULL |  25 | NULL |
++-----+---------+-------+------+-----+------+
+1 row in set (0.00 sec)
+
+mysql> SELECT * FROM employee
+    -> WHERE loc IS NOT  NULL;
++-----+----------+------------+-------+-----+-----------+
+| eid | fname    | lname      | esal  | age | loc       |
++-----+----------+------------+-------+-----+-----------+
+| 101 | Rahul    | Gandhi     | 47000 |  52 | Wayanad   |
+| 102 | Sonia    | Sheti      | 57000 |  78 | Wayanad   |
+| 103 | Priyanka | vadra      | 67000 |  40 | NewDelhi  |
+| 104 | Modi     | PM         | 77000 |  75 | NewDelhi  |
+| 105 | Amith    | Shaw       | 87000 |  80 | NewDelhi  |
+| 106 | Rajni    | Kanth      | 27000 |  75 | Chennai   |
+| 107 | Vijay    | Sethupathi | 37000 |  40 | Chennai   |
+| 108 | Anuska   | Setti      | 27000 |  38 | Bangalore |
+| 109 | Alia     | NULL       | 96000 |  35 | Bangalore |
++-----+----------+------------+-------+-----+-----------+
+9 rows in set (0.00 sec)
+
+mysql> SELECT age as AGE,
+    -> COUNT(*)as No_Of_Employee
+    -> FROM employee
+    -> GROUP BY age
+    -> ORDER BY age
+    -> LIMIT 3;
++-----+----------------+
+| AGE | No_Of_Employee |
++-----+----------------+
+|  25 |              1 |
+|  35 |              1 |
+|  38 |              1 |
++-----+----------------+
+3 rows in set (0.00 sec)
+
+mysql> SELECT lname as Last_Name,
+    -> COUNT(*) as NO_OF_EMPLOYEE
+    -> FROM employee
+    -> WHERE loc='NewDelhi'
+    -> GROUP BY lname;
++-----------+----------------+
+| Last_Name | NO_OF_EMPLOYEE |
++-----------+----------------+
+| vadra     |              1 |
+| PM        |              1 |
+| Shaw      |              1 |
++-----------+----------------+
+3 rows in set (0.01 sec)
+
+mysql> DELETE FROM employee
+    -> WHERE eid =109;
+Query OK, 1 row affected (0.02 sec)
+
+mysql> SELECT* FROM employee;
++-----+----------+------------+-------+-----+-----------+
+| eid | fname    | lname      | esal  | age | loc       |
++-----+----------+------------+-------+-----+-----------+
+| 101 | Rahul    | Gandhi     | 47000 |  52 | Wayanad   |
+| 102 | Sonia    | Sheti      | 57000 |  78 | Wayanad   |
+| 103 | Priyanka | vadra      | 67000 |  40 | NewDelhi  |
+| 104 | Modi     | PM         | 77000 |  75 | NewDelhi  |
+| 105 | Amith    | Shaw       | 87000 |  80 | NewDelhi  |
+| 106 | Rajni    | Kanth      | 27000 |  75 | Chennai   |
+| 107 | Vijay    | Sethupathi | 37000 |  40 | Chennai   |
+| 108 | Anuska   | Setti      | 27000 |  38 | Bangalore |
+| 110 | Keerthi  | NULL       |  NULL |  25 | NULL      |
++-----+----------+------------+-------+-----+-----------+
+9 rows in set (0.01 sec)
+
+mysql> INSERT INTO employee(eid,fname,esal,age,loc)
+    -> VALUES(109,'Alia',95000,35,'Bangalore');
+Query OK, 1 row affected (0.00 sec)
+
+mysql> SELECT* FROM employee;
++-----+----------+------------+-------+-----+-----------+
+| eid | fname    | lname      | esal  | age | loc       |
++-----+----------+------------+-------+-----+-----------+
+| 101 | Rahul    | Gandhi     | 47000 |  52 | Wayanad   |
+| 102 | Sonia    | Sheti      | 57000 |  78 | Wayanad   |
+| 103 | Priyanka | vadra      | 67000 |  40 | NewDelhi  |
+| 104 | Modi     | PM         | 77000 |  75 | NewDelhi  |
+| 105 | Amith    | Shaw       | 87000 |  80 | NewDelhi  |
+| 106 | Rajni    | Kanth      | 27000 |  75 | Chennai   |
+| 107 | Vijay    | Sethupathi | 37000 |  40 | Chennai   |
+| 108 | Anuska   | Setti      | 27000 |  38 | Bangalore |
+| 109 | Alia     | NULL       | 95000 |  35 | Bangalore |
+| 110 | Keerthi  | NULL       |  NULL |  25 | NULL      |
++-----+----------+------------+-------+-----+-----------+
+10 rows in set (0.00 sec)
